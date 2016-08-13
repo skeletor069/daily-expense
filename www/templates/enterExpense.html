@@ -1,0 +1,31 @@
+<ion-view title="Enter Expense" id="page5">
+    <ion-content padding="true" scroll="false" class="has-header">
+      <h3 id="enterExpense-heading2" style="color:#978E8E;text-align:right;" class=" ">{{equation}}=</h3>
+      <h1 id="enterExpense-heading1" style="color:#73AA4E;font-weight:600;text-align:right;" class=" ">{{total}}</h1>
+      <div id="enterExpense-button-bar4" class=" button-bar ">
+        <button id="enterExpense-button7" class=" button button-stable  button-block " ng-click="NumberClicked(1)">1</button>
+        <button id="enterExpense-button8" class=" button button-stable  button-block " ng-click="NumberClicked(2)">2</button>
+        <button id="enterExpense-button9" class=" button button-stable  button-block " ng-click="NumberClicked(3)">3</button>
+        <button id="enterExpense-button21" class=" button button-assertive  button-block " ng-click="BackspaceClicked()">&lt;-</button>
+      </div>
+      <div id="enterExpense-button-bar5" class=" button-bar ">
+        <button id="enterExpense-button12" class=" button button-stable  button-block " ng-click="NumberClicked(4)">4</button>
+        <button id="enterExpense-button13" class=" button button-stable  button-block " ng-click="NumberClicked(5)">5</button>
+        <button id="enterExpense-button14" class=" button button-stable  button-block " ng-click="NumberClicked(6)">6</button>
+        <button id="enterExpense-button22" class=" button button-calm  button-block " ng-click="OperatorClicked('/')">/</button>
+      </div>
+      <div id="enterExpense-button-bar6" class=" button-bar ">
+        <button id="enterExpense-button15" class=" button button-stable  button-block " ng-click="NumberClicked(7)">7</button>
+        <button id="enterExpense-button16" class=" button button-stable  button-block " ng-click="NumberClicked(8)">8</button>
+        <button id="enterExpense-button17" class=" button button-stable  button-block " ng-click="NumberClicked(9)">9</button>
+        <button id="enterExpense-button23" class=" button button-calm  button-block " ng-click="OperatorClicked('*')">X</button>
+      </div>
+      <div id="enterExpense-button-bar7" class=" button-bar ">
+        <button id="enterExpense-button24" class=" button button-stable  button-block ">.</button>
+        <button id="enterExpense-button18" class=" button button-stable  button-block " ng-click="NumberClicked(0)">0</button>
+        <button id="enterExpense-button19" class=" button button-positive  button-block " ng-click="OperatorClicked('+')">+</button>
+        <button id="enterExpense-button20" class=" button button-calm  button-block " ng-click="OperatorClicked('-')">-</button>
+      </div>
+      <button id="enterExpense-button25" class=" button button-balanced  button-block " ng-click="ResultClicked()">=</button>
+    </ion-content>
+</ion-view>

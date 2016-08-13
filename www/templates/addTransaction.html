@@ -1,0 +1,27 @@
+<ion-view title="Add Transaction" id="page2">
+    <ion-content padding="false" class="has-header">
+        <div id="addTransaction-button-bar3" class=" button-bar ">
+            <a ui-sref="menu.home" id="addTransaction-button10" class=" button button-stable  button-block ">Cancel</a>
+            <a ui-sref="menu.home" id="addTransaction-button11" class=" button button-positive  button-block ">Save</a>
+        </div>
+        <ion-list id="addTransaction-list5">
+          <label class="item item-input " id="addTransaction-list-item22" ui-sref="menu.categories">
+            <span class="input-label">Category</span>
+            <span>{{GetCategoryNameById(cat_id)}}</span>
+          </label>
+            <label class="item item-input " id="addTransaction-input5" ui-sref="menu.enterExpense">
+                <span class="input-label">Expense</span>
+              <span>{{cost}}</span>
+            </label>
+
+            <label class="item item-input " id="addTransaction-input6">
+                <span class="input-label">Date</span>
+                <input type="date" ng-model="date" ng-change="UpdateDate(date)">
+            </label>
+            <label class="item item-input " id="addTransaction-textarea1">
+                <span class="input-label">Note</span>
+                <input type="text" ng-model="note" ng-change="UpdateNote(note)">
+            </label>
+        </ion-list>
+    </ion-content>
+</ion-view>
