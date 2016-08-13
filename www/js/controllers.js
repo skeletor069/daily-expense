@@ -8,11 +8,30 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('categoriesCtrl', ['$scope', '$stateParams', '$cordovaSQLite','$ionicHistory','TrxnService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('categoriesCtrl', ['$scope', '$stateParams','Categories','$ionicHistory','TrxnService','$cordovaSQLite',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $cordovaSQLite, $ionicHistory, TrxnService) {
-  $scope.categories = GetCategories();
+function ($scope, $stateParams, Categories, $ionicHistory, TrxnService, $cordovaSQLite) {
+  $scope.categories = [];
+  //GetCategories();
+  PopulateCategories();
+
+  function PopulateCategories(){
+    var query = "select id,category_name from categories";
+    $cordovaSQLite.execute(db, query, []).then(function(res){
+      if(res.rows.length > 0){
+        for(var i = 0 ; i < res.rows.length; i++){
+          var item = {
+            id : res.rows.item(i).id,
+            cat_name : res.rows.item(i).category_name
+          }
+          $scope.categories.push(item);
+        }
+      }
+    }, function(err){
+      console.log(err);
+    });
+  }
 
   $scope.CategorySelected = function(cat_id){
     TrxnService.setCategory(cat_id);
@@ -20,39 +39,34 @@ function ($scope, $stateParams, $cordovaSQLite, $ionicHistory, TrxnService) {
   }
 
   function GetCategories(){
-    var items = [];
-    var query = "select id,category_name from categories";
-    $cordovaSQLite.execute(db,query, []).then(function(res){
-      if(res.rows.length > 0) {
-        //console.log("SELECTED -> " + res.rows.item(0).firstname + " " + res.rows.item(0).lastname);
-        for(var i = 0 ; i < res.rows.item.length; i++){
-          var item = {
-            id : res.rows.item[i].id,
-            name : res.rows.item[i].category_name
-          };
-          items.push(item);
-        }
-        return items;
-      }
-    }, function(err){});
-
+    Categories.all().then(function(categories){
+      $scope.categories = categories;
+    });
   }
 
 }])
 
-.controller('addNewCategoryCtrl', ['$scope', '$stateParams','$cordovaSQLite', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('addNewCategoryCtrl', ['$scope', '$stateParams', 'Categories','$cordovaSQLite',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $cordovaSQLite) {
-  $scope.newCategoryName = "";
-  $scope.SaveNewCategory = function(){
-    if($scope.newCategoryName != ""){
-      var query = "inster into categories(category_name, icon_name) values(?,?)";
-      $cordovaSQLite.execute(db, query, [$scope.newCategoryName, "blank"]).then(function(result){
-        console.log("insert id " + result.insertId);
-      });
-    }
+function ($scope, $stateParams,Categories, $cordovaSQLite) {
 
+  $scope.category_name = "";
+
+  $scope.SaveNewItem = function(cat_nm){
+    //Categories.add({category_name: cat_nm});
+    if(cat_nm != "") {
+      var query = "insert into categories(category_name, icon_name) values(?,?)";
+
+      $cordovaSQLite.execute(db, query, [cat_nm, 'blank']).then(
+        function (res) {
+          console.log(res.insertId)
+        },
+        function (err) {
+          console.log(err);
+        }
+      );
+    }
   }
 
 }])
@@ -111,6 +125,8 @@ function ($scope, $stateParams, TrxnService, $cordovaSQLite) {
   $scope.cat_id = TrxnService.getCategory();
   $scope.note = TrxnService.getNote();
   $scope.date = TrxnService.getEntryDate();
+  $scope.selectedCategory = "";
+  SetCategoryNameById();
 
   $scope.UpdateNote = function(note){
     TrxnService.setNote(note);
@@ -120,15 +136,16 @@ function ($scope, $stateParams, TrxnService, $cordovaSQLite) {
     TrxnService.setEntryDate(date);
   };
 
-  $scope.GetCategoryNameById = function(id){
+  function SetCategoryNameById(){
     var query = "select category_name from categories where id=?";
-    $cordovaSQLite.execute(db, query, [id]).then(
+
+    $cordovaSQLite.execute(db, query, [$scope.cat_id]).then(
       function(res){
         if(res.rows.length > 0)
-          return res.rows.item[0].category_name;
+          $scope.selectedCategory = res.rows.item(0).category_name;
       },
       function(err){
-
+        console.log(err);
       }
     );
   }

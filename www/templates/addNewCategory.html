@@ -2,12 +2,14 @@
     <ion-content padding="false" class="has-header">
         <div id="addNewCategory-button-bar8" class=" button-bar ">
             <a ui-sref="menu.categories" id="addNewCategory-button28" class=" button button-stable  button-block ">Cancel</a>
-            <a ui-sref="menu.categories" id="addNewCategory-button29" class=" button button-positive  button-block " ng-click="SaveNewCategory()">Save</a>
+            <a id="addNewCategory-button29" class=" button button-positive  button-block " ng-click="SaveNewItem(category_name)">Save</a>
         </div>
-        <form id="addNewCategory-form2" class="list ">
+        <ion-list id="addNewCategory-form2" class="list ">
             <label class="item item-input " id="addNewCategory-input8">
-                <input type="text" placeholder="Category Name" ng-model="newCategoryName">
+                <input type="text" placeholder="Category Name" ng-model="category_name">
             </label>
-        </form>
+
+        </ion-list>
+
     </ion-content>
 </ion-view>

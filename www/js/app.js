@@ -21,8 +21,32 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    db = $cordovaSQLite.openDB({name : "expense.db"});
+    if(window.cordova) {
+      // App syntax
+      db = $cordovaSQLite.openDB("expense.db");
+    } else {
+      // Ionic serve syntax
+      db = window.openDatabase("expense.db", "1.0", "My expense", -1);
+    }
+    //$cordovaSQLite.execute(db, "drop table if exists categories");
     $cordovaSQLite.execute(db, "create table if not exists categories(id integer primary key, category_name text,icon_name text)");
     $cordovaSQLite.execute(db, "create table if not exists expense(id integer primary key, category_id integer, cost real, date numeric, note text)");
+    //$cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Transport","blank"]);
+    $cordovaSQLite.execute(db,"select id from categories",[]).then(
+      function(res){
+        if(res.rows.length == 0){
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Transport","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Food","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Household","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Bills","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Shopping","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Grocery","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Telephone","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Car","Blank"]);
+        }
+      }, function(err){
+        console.log(err);
+      }
+    );
   });
 })
