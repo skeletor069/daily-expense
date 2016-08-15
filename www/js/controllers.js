@@ -7,13 +7,17 @@ function ($scope, $stateParams, $cordovaSQLite) {
   var monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
-  $scope.transactions = [];
-  var today = new Date();
-  $scope.displayMonth = today.getMonth();
-  $scope.displayYear = today.getFullYear();
-  $scope.displayTotal = 0;
-  $scope.displayMonthName = monthNames[$scope.displayMonth];
-  //PopulateTransactions();
+
+  $scope.$on("$ionicView.enter", function(event, data){
+    $scope.transactions = [];
+    var today = new Date();
+    $scope.displayMonth = today.getMonth();
+    $scope.displayYear = today.getFullYear();
+    $scope.displayTotal = 0;
+    $scope.displayMonthName = monthNames[$scope.displayMonth];
+    PopulateTransactions();
+
+  });
 
   $scope.GetCategoryTitle = function(cat){
     return cat.charAt(0).toUpperCase();
@@ -27,7 +31,7 @@ function ($scope, $stateParams, $cordovaSQLite) {
       $scope.displayMonth = 0;
     }
     $scope.displayMonthName = monthNames[$scope.displayMonth];
-    //PopulateTransactions();
+    PopulateTransactions();
   };
 
   $scope.PreviousMonth = function(){
@@ -38,7 +42,7 @@ function ($scope, $stateParams, $cordovaSQLite) {
       $scope.displayMonth = 11;
     }
     $scope.displayMonthName = monthNames[$scope.displayMonth];
-    //PopulateTransactions();
+    PopulateTransactions();
   }
 
   function PopulateTransactions(){
@@ -47,7 +51,7 @@ function ($scope, $stateParams, $cordovaSQLite) {
       function(res){
         var trxnList = [];
         var totalCost = 0;
-        console.log(res.rows.length);
+
         if(res.rows.length > 0){
           for(var i = 0 ; i < res.rows.length; i++){
             var temp = new Date(res.rows.item(i).date);
@@ -63,7 +67,6 @@ function ($scope, $stateParams, $cordovaSQLite) {
             };
             totalCost += res.rows.item(i).cost;
             trxnList.push(trxn);
-            console.log("adding");
           }
 
         }
@@ -206,7 +209,7 @@ function ($scope, $stateParams, TrxnService, $cordovaSQLite, $state) {
       $cordovaSQLite.execute(db, query,[cat_id, cst, dt, nt, dt.getDate(), dt.getMonth(), dt.getFullYear()]).then(
         function(res){
           TrxnService.Reset();
-          $state.go('menu.home');
+          $state.go('menu.home',{},{reload:true});
         },
         function(err){
           console.log(err);

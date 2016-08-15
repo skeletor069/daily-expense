@@ -12,7 +12,6 @@ angular.module('app.routes', [])
 
       .state('menu.home', {
     url: '/page1',
-      cache: false,
     views: {
       'side-menu21': {
         templateUrl: 'templates/home.html',
