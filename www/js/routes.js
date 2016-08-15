@@ -58,7 +58,6 @@ angular.module('app.routes', [])
   })
 
   .state('menu.addTransaction', {
-    cache : false,
     url: '/page2',
     views: {
       'side-menu21': {

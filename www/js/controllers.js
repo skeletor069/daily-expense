@@ -194,11 +194,16 @@ function ($scope, $stateParams, $ionicHistory, TrxnService) {
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, TrxnService, $cordovaSQLite, $state) {
-  $scope.cost = TrxnService.getCost();
-  $scope.cat_id = TrxnService.getCategory();
-  $scope.note = TrxnService.getNote();
-  $scope.date = TrxnService.getEntryDate();
-  $scope.selectedCategory = "";
+
+  $scope.$on("$ionicView.enter", function(event, data){
+    $scope.cost = TrxnService.getCost();
+    $scope.cat_id = TrxnService.getCategory();
+    $scope.note = TrxnService.getNote();
+    $scope.date = TrxnService.getEntryDate();
+    $scope.selectedCategory = "";
+    SetCategoryNameById();
+
+  });
 
   $scope.SaveTransaction = function(cat_id,cst, dt,nt){
 
@@ -222,7 +227,7 @@ function ($scope, $stateParams, TrxnService, $cordovaSQLite, $state) {
     TrxnService.Reset();
   }
 
-  SetCategoryNameById();
+
 
   $scope.UpdateNote = function(note){
     TrxnService.setNote(note);
