@@ -21,55 +21,6 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    if(window.cordova) {
-      try {
-        db = $cordovaSQLite.openDB({name:"expense.db",location:'default'});
-      } catch (error) {
-        alert(error);
-      }
-    } else {
-      // Ionic serve syntax
-      try {
-        db = window.openDatabase("expense.db", "1.0", "My expense", -1);
-      }catch(error){
-        alert(error);
-      }
-    }
 
-    //try {
-    //  db = $cordovaSQLite.openDB("expense.db");
-    //} catch (error) {
-    //  alert(error);
-    //}
-    //$cordovaSQLite.execute(db, "drop table if exists categories");
-    try {
-      $cordovaSQLite.execute(db, "create table if not exists categories(id integer primary key, category_name text,icon_name text)");
-    }catch(error) {
-      alert("problem creating table " + error);
-    }
-    try {
-      $cordovaSQLite.execute(db, "create table if not exists expense(id integer primary key, category_id integer, cost real, date numeric, note text, day integer, month integer, year integer)");
-    }catch(error){
-      alert("problem creating table " + error);
-    }
-
-    //$cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Transport","blank"]);
-    $cordovaSQLite.execute(db,"select id from categories",[]).then(
-      function(res){
-        if(res.rows.length == 0){
-          alert("adding");
-          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Transport","Blank"]);
-          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Food","Blank"]);
-          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Household","Blank"]);
-          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Bills","Blank"]);
-          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Shopping","Blank"]);
-          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Grocery","Blank"]);
-          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Telephone","Blank"]);
-          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Car","Blank"]);
-        }
-      }, function(err){
-        console.log(err);
-      }
-    );
   });
 })

@@ -8,43 +8,58 @@ function ($scope, $stateParams, $cordovaSQLite,TrxnService) {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  $scope.$on("$ionicView.enter", function(event, data){
-    $scope.transactions = [];
-    var today = new Date();
-    $scope.displayMonth = today.getMonth();
-    $scope.displayYear = today.getFullYear();
-    $scope.displayTotal = 0;
-    $scope.displayMonthName = monthNames[$scope.displayMonth];
-    PopulateTransactions();
-    TrxnService.Reset();
-  });
-
-  $scope.GetCategoryTitle = function(cat){
-    return cat.charAt(0).toUpperCase();
-  }
-
-  $scope.NextMonth = function(){
-    $scope.displayMonth++;
-    if($scope.displayMonth == 12)
-    {
-      $scope.displayYear++;
-      $scope.displayMonth = 0;
+  function CreateOrOpenDb(){
+    if(window.cordova) {
+      try {
+        db = $cordovaSQLite.openDB({name:"expense.db",location:'default'});
+      } catch (error) {
+        alert(error);
+      }
+    } else {
+      // Ionic serve syntax
+      try {
+        db = window.openDatabase("expense.db", "1.0", "My expense", -1);
+      }catch(error){
+        alert(error);
+      }
     }
-    $scope.displayMonthName = monthNames[$scope.displayMonth];
-    PopulateTransactions();
-  };
 
-  $scope.PreviousMonth = function(){
-    $scope.displayMonth--;
-    if($scope.displayMonth == -1)
-    {
-      $scope.displayYear--;
-      $scope.displayMonth = 11;
+    //try {
+    //  db = $cordovaSQLite.openDB("expense.db");
+    //} catch (error) {
+    //  alert(error);
+    //}
+    //$cordovaSQLite.execute(db, "drop table if exists categories");
+    try {
+      $cordovaSQLite.execute(db, "create table if not exists categories(id integer primary key, category_name text,icon_name text)");
+    }catch(error) {
+      alert("problem creating table " + error);
     }
-    $scope.displayMonthName = monthNames[$scope.displayMonth];
-    PopulateTransactions();
-  }
+    try {
+      $cordovaSQLite.execute(db, "create table if not exists expense(id integer primary key, category_id integer, cost real, date numeric, note text, day integer, month integer, year integer)");
+    }catch(error){
+      alert("problem creating table " + error);
+    }
 
+    //$cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Transport","blank"]);
+    $cordovaSQLite.execute(db,"select id from categories",[]).then(
+      function(res){
+        if(res.rows.length == 0){
+          alert("adding");
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Transport","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Food","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Household","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Bills","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Shopping","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Grocery","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Telephone","Blank"]);
+          $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Car","Blank"]);
+        }
+      }, function(err){
+        console.log(err);
+      }
+    );
+  }
   function PopulateTransactions(){
     var query = "select E.*,C.category_name from expense E,categories C where E.category_id=C.id and E.year=? and E.month=? order by year,month,day,id desc";
     $cordovaSQLite.execute(db, query, [$scope.displayYear,$scope.displayMonth]).then(
@@ -78,7 +93,43 @@ function ($scope, $stateParams, $cordovaSQLite,TrxnService) {
       }
     );
   }
+  CreateOrOpenDb();
+  $scope.$on("$ionicView.enter", function(event, data){
+    $scope.transactions = [];
+    var today = new Date();
+    $scope.displayMonth = today.getMonth();
+    $scope.displayYear = today.getFullYear();
+    $scope.displayTotal = 0;
+    $scope.displayMonthName = monthNames[$scope.displayMonth];
+    PopulateTransactions();
+    TrxnService.Reset();
+  });
 
+  $scope.GetCategoryTitle = function(cat){
+    return cat.charAt(0).toUpperCase();
+  };
+
+  $scope.NextMonth = function(){
+    $scope.displayMonth++;
+    if($scope.displayMonth == 12)
+    {
+      $scope.displayYear++;
+      $scope.displayMonth = 0;
+    }
+    $scope.displayMonthName = monthNames[$scope.displayMonth];
+    PopulateTransactions();
+  };
+
+  $scope.PreviousMonth = function(){
+    $scope.displayMonth--;
+    if($scope.displayMonth == -1)
+    {
+      $scope.displayYear--;
+      $scope.displayMonth = 11;
+    }
+    $scope.displayMonthName = monthNames[$scope.displayMonth];
+    PopulateTransactions();
+  };
 }])
 
 .controller('categoriesCtrl', ['$scope', '$stateParams','Categories','$ionicHistory','TrxnService','$cordovaSQLite',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
