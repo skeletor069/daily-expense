@@ -1,0 +1,18 @@
+.item-icon{
+  float: left;
+  padding-right: 10px;
+}
+.item-expense{
+  float: left;
+  width: 80%;
+}
+
+.expense-info{
+  float: left;
+  width: 70%;
+}
+.expense-cost{
+  float: right;
+  text-align: right;
+  width: 28%;
+}

@@ -7,7 +7,7 @@ var db = null;
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives','app.services','ngCordova'])
+angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives','app.services','ngCordova', 'ionic-letter-avatar'])
 
 .run(function($ionicPlatform, $cordovaSQLite) {
   $ionicPlatform.ready(function() {
@@ -28,9 +28,9 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       // Ionic serve syntax
       db = window.openDatabase("expense.db", "1.0", "My expense", -1);
     }
-    //$cordovaSQLite.execute(db, "drop table if exists categories");
+    //$cordovaSQLite.execute(db, "drop table if exists expense");
     $cordovaSQLite.execute(db, "create table if not exists categories(id integer primary key, category_name text,icon_name text)");
-    $cordovaSQLite.execute(db, "create table if not exists expense(id integer primary key, category_id integer, cost real, date numeric, note text)");
+    $cordovaSQLite.execute(db, "create table if not exists expense(id integer primary key, category_id integer, cost real, date numeric, note text, day integer, month integer, year integer)");
     //$cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Transport","blank"]);
     $cordovaSQLite.execute(db,"select id from categories",[]).then(
       function(res){

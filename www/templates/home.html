@@ -1,18 +1,54 @@
 <ion-view title="Home" id="page1">
     <ion-content padding="false" class="has-header">
+      <a ui-sref="menu.addTransaction" id="home-button5" class=" button button-positive  button-block ">Add Transaction</a>
         <div id="home-button-bar1" class=" button-bar ">
-            <button id="home-button2" class=" button button-light  button-block ">&lt;</button>
-            <button id="home-button3" class=" button button-stable  button-block ">July, 2016</button>
-            <button id="home-button4" class=" button button-light  button-block ">&gt;</button>
+            <button id="home-button2" class=" button button-light  button-block " ng-click="PreviousMonth()">&lt;</button>
+            <button id="home-button3" class=" button button-stable  button-block ">{{displayMonthName}}</button>
+            <button id="home-button4" class=" button button-light  button-block " ng-click="NextMonth()">&gt;</button>
         </div>
         <div class="list card manual-card-fullwidth " id="home-card21">
-            <ion-item id="home-list-item13">Item</ion-item>
+            <ion-item id="home-list-item13" class="text-right"><h1>{{displayTotal}}</h1></ion-item>
         </div>
-        <a ui-sref="menu.addTransaction" id="home-button5" class=" button button-positive  button-block ">Add Transaction</a>
+
         <ion-list id="home-list3">
-            <ion-item id="home-list-item17">Item 1</ion-item>
-            <ion-item id="home-list-item18">Item 2</ion-item>
-            <ion-item id="home-list-item19">Item 3</ion-item>
+            <!--<ion-item id="home-list-item17">-->
+              <!--<ion-list>-->
+                <!--<ion-item>-->
+                  <!--<h3>Aug 3</h3>-->
+                  <!--<h1>334 Tk</h1>-->
+                <!--</ion-item>-->
+                <!--<ion-item class="item item-input ">-->
+                      <!--<span class="input-label">30Tk</span>-->
+                      <!--<span>-->
+                        <!--<b>Transport</b><br>-->
+                        <!--Some note-->
+                      <!--</span>-->
+                <!--</ion-item>-->
+
+                <!--<label class="item item-input ">-->
+                  <!--<span class="input-label">30Tk</span>-->
+                  <!--<span>Transport</span>-->
+                <!--</label>-->
+              <!--</ion-list>-->
+
+
+            <!--</ion-item>-->
+            <!---->
+
+          <ion-item ng-repeat="trxn in transactions" class="item">
+            <div class="item-icon">
+              <ionic-letter-avatar data="{{GetCategoryTitle(trxn.cat_name)}}"></ionic-letter-avatar>
+            </div>
+            <div class="item-expense">
+              <div class="expense-info">
+                {{trxn.display_date}}<br>
+                {{trxn.display_note}}
+              </div>
+              <div class="expense-cost">
+                {{trxn.cost}}
+              </div>
+            </div>
+          </ion-item>
         </ion-list>
     </ion-content>
 </ion-view>

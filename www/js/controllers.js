@@ -1,10 +1,80 @@
 angular.module('app.controllers', [])
 
-.controller('homeCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('homeCtrl', ['$scope', '$stateParams','$cordovaSQLite', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, $stateParams, $cordovaSQLite) {
+  var monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  $scope.transactions = [];
+  var today = new Date();
+  $scope.displayMonth = today.getMonth();
+  $scope.displayYear = today.getFullYear();
+  $scope.displayTotal = 0;
+  $scope.displayMonthName = monthNames[$scope.displayMonth];
+  PopulateTransactions();
 
+  $scope.GetCategoryTitle = function(cat){
+    return cat.charAt(0).toUpperCase();
+  }
+
+  $scope.NextMonth = function(){
+    $scope.displayMonth++;
+    if($scope.displayMonth == 12)
+    {
+      $scope.displayYear++;
+      $scope.displayMonth = 0;
+    }
+    $scope.displayMonthName = monthNames[$scope.displayMonth];
+    PopulateTransactions();
+  };
+
+  $scope.PreviousMonth = function(){
+    $scope.displayMonth--;
+    if($scope.displayMonth == -1)
+    {
+      $scope.displayYear--;
+      $scope.displayMonth = 11;
+    }
+    $scope.displayMonthName = monthNames[$scope.displayMonth];
+    PopulateTransactions();
+  }
+
+  function PopulateTransactions(){
+    var query = "select E.*,C.category_name from expense E,categories C where E.category_id=C.id and E.year=? and E.month=? order by year,month,day,id desc";
+    $cordovaSQLite.execute(db, query, [$scope.displayYear,$scope.displayMonth]).then(
+      function(res){
+        var trxnList = [];
+        var totalCost = 0;
+        console.log(res.rows.length);
+        if(res.rows.length > 0){
+          for(var i = 0 ; i < res.rows.length; i++){
+            var temp = new Date(res.rows.item(i).date);
+            var trxn = {
+              id : res.rows.item(i).id,
+              cost : res.rows.item(i).cost,
+              year : res.rows.item(i).year,
+              month : res.rows.item(i).month,
+              cat_id : res.rows.item(i).category_id,
+              cat_name :  res.rows.item(i).category_name,
+              display_note : (res.rows.item(i).note == "") ? res.rows.item(i).category_name : res.rows.item(i).note,
+              display_date : temp.toDateString()
+            };
+            totalCost += res.rows.item(i).cost;
+            trxnList.push(trxn);
+            console.log("adding");
+          }
+
+        }
+        $scope.transactions = trxnList;
+        $scope.displayTotal = totalCost;
+      },
+      function(err){
+        console.log(err);
+      }
+    );
+  }
 
 }])
 
@@ -117,15 +187,38 @@ function ($scope, $stateParams, $ionicHistory, TrxnService) {
 
 }])
 
-.controller('addTransactionCtrl', ['$scope', '$stateParams','TrxnService','$cordovaSQLite', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('addTransactionCtrl', ['$scope', '$stateParams','TrxnService','$cordovaSQLite','$state', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, TrxnService, $cordovaSQLite) {
+function ($scope, $stateParams, TrxnService, $cordovaSQLite, $state) {
   $scope.cost = TrxnService.getCost();
   $scope.cat_id = TrxnService.getCategory();
   $scope.note = TrxnService.getNote();
   $scope.date = TrxnService.getEntryDate();
   $scope.selectedCategory = "";
+
+  $scope.SaveTransaction = function(cat_id,cst, dt,nt){
+
+    if(cst > 0){
+
+      var query = "insert into expense(category_id,cost,date,note, day, month, year) values(?,?,?,?,?,?,?)";
+
+      $cordovaSQLite.execute(db, query,[cat_id, cst, dt, nt, dt.getDate(), dt.getMonth(), dt.getFullYear()]).then(
+        function(res){
+          TrxnService.Reset();
+          $state.go('menu.home');
+        },
+        function(err){
+          console.log(err);
+        }
+      );
+    }
+  };
+
+  $scope.Cancel = function(){
+    TrxnService.Reset();
+  }
+
   SetCategoryNameById();
 
   $scope.UpdateNote = function(note){

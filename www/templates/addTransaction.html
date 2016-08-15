@@ -1,8 +1,8 @@
 <ion-view title="Add Transaction" id="page2">
     <ion-content padding="false" class="has-header">
         <div id="addTransaction-button-bar3" class=" button-bar ">
-            <a ui-sref="menu.home" id="addTransaction-button10" class=" button button-stable  button-block ">Cancel</a>
-            <a ui-sref="menu.home" id="addTransaction-button11" class=" button button-positive  button-block ">Save</a>
+            <a ui-sref="menu.home" id="addTransaction-button10" class=" button button-stable  button-block " ng-click="Cancel()">Cancel</a>
+            <a  id="addTransaction-button11" class=" button button-positive  button-block " ng-click="SaveTransaction(cat_id, cost, date, note)">Save</a>
         </div>
         <ion-list id="addTransaction-list5">
           <label class="item item-input " id="addTransaction-list-item22" ui-sref="menu.categories">
