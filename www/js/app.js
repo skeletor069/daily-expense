@@ -21,16 +21,36 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    if(window.cordova) {
-      // App syntax
-      db = $cordovaSQLite.openDB({name: "expense.db", location: 1});
-    } else {
-      // Ionic serve syntax
-      db = window.openDatabase("expense.db", "1.0", "My expense", -1);
+    //if(window.cordova) {
+    //  // App syntax
+    //  //db = $cordovaSQLite.openDB({name: "expense.db", location: 1});
+    //  try {
+    //    db = $cordovaSQLite.openDB({name:"expense.db",location:'default'});
+    //  } catch (error) {
+    //    alert(error);
+    //  }
+    //} else {
+    //  // Ionic serve syntax
+    //  db = window.openDatabase("expense.db", "1.0", "My expense", -1);
+    //}
+
+    try {
+      db = $cordovaSQLite.openDB({name:"expense.db",location:'default'});
+    } catch (error) {
+      alert(error);
     }
     //$cordovaSQLite.execute(db, "drop table if exists categories");
-    $cordovaSQLite.execute(db, "create table if not exists categories(id integer primary key, category_name text,icon_name text)");
-    $cordovaSQLite.execute(db, "create table if not exists expense(id integer primary key, category_id integer, cost real, date numeric, note text, day integer, month integer, year integer)");
+    try {
+      $cordovaSQLite.execute(db, "create table if not exists categories(id integer primary key, category_name text,icon_name text)");
+    }catch(error) {
+      alert("problem creating table " + error);
+    }
+    try {
+      $cordovaSQLite.execute(db, "create table if not exists expense(id integer primary key, category_id integer, cost real, date numeric, note text, day integer, month integer, year integer)");
+    }catch(error){
+      alert("problem creating table " + error);
+    }
+
     //$cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Transport","blank"]);
     $cordovaSQLite.execute(db,"select id from categories",[]).then(
       function(res){
