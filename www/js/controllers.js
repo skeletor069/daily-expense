@@ -85,9 +85,13 @@ function ($scope, $stateParams, $cordovaSQLite) {
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, Categories, $ionicHistory, TrxnService, $cordovaSQLite) {
-  $scope.categories = [];
-  //GetCategories();
-  PopulateCategories();
+
+
+  $scope.$on("$ionicView.enter", function(event, data){
+    $scope.categories = [];
+    PopulateCategories();
+
+  });
 
   function PopulateCategories(){
     var query = "select id,category_name from categories";
@@ -109,13 +113,7 @@ function ($scope, $stateParams, Categories, $ionicHistory, TrxnService, $cordova
   $scope.CategorySelected = function(cat_id){
     TrxnService.setCategory(cat_id);
     $ionicHistory.goBack();
-  }
-
-  function GetCategories(){
-    Categories.all().then(function(categories){
-      $scope.categories = categories;
-    });
-  }
+  };
 
 }])
 
@@ -133,7 +131,7 @@ function ($scope, $stateParams,Categories, $cordovaSQLite) {
 
       $cordovaSQLite.execute(db, query, [cat_nm, 'blank']).then(
         function (res) {
-          console.log(res.insertId)
+
         },
         function (err) {
           console.log(err);

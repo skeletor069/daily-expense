@@ -25,7 +25,6 @@ angular.module('app.routes', [])
   })
 
   .state('menu.categories', {
-    cache: false,
     url: '/category',
     views: {
       'side-menu21': {
