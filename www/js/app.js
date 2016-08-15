@@ -23,18 +23,19 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
     }
     if(window.cordova) {
       // App syntax
-      db = $cordovaSQLite.openDB("expense.db");
+      db = $cordovaSQLite.openDB({name: "expense.db", location: 1});
     } else {
       // Ionic serve syntax
       db = window.openDatabase("expense.db", "1.0", "My expense", -1);
     }
-    //$cordovaSQLite.execute(db, "drop table if exists expense");
+    //$cordovaSQLite.execute(db, "drop table if exists categories");
     $cordovaSQLite.execute(db, "create table if not exists categories(id integer primary key, category_name text,icon_name text)");
     $cordovaSQLite.execute(db, "create table if not exists expense(id integer primary key, category_id integer, cost real, date numeric, note text, day integer, month integer, year integer)");
     //$cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Transport","blank"]);
     $cordovaSQLite.execute(db,"select id from categories",[]).then(
       function(res){
         if(res.rows.length == 0){
+          alert("adding");
           $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Transport","Blank"]);
           $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Food","Blank"]);
           $cordovaSQLite.execute(db, "insert into categories(category_name, icon_name) values(?,?)",["Household","Blank"]);

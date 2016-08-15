@@ -1,9 +1,9 @@
 angular.module('app.controllers', [])
 
-.controller('homeCtrl', ['$scope', '$stateParams','$cordovaSQLite', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('homeCtrl', ['$scope', '$stateParams','$cordovaSQLite','TrxnService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $cordovaSQLite) {
+function ($scope, $stateParams, $cordovaSQLite,TrxnService) {
   var monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
@@ -16,7 +16,7 @@ function ($scope, $stateParams, $cordovaSQLite) {
     $scope.displayTotal = 0;
     $scope.displayMonthName = monthNames[$scope.displayMonth];
     PopulateTransactions();
-
+    TrxnService.Reset();
   });
 
   $scope.GetCategoryTitle = function(cat){
