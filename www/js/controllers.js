@@ -13,7 +13,7 @@ function ($scope, $stateParams, $cordovaSQLite) {
   $scope.displayYear = today.getFullYear();
   $scope.displayTotal = 0;
   $scope.displayMonthName = monthNames[$scope.displayMonth];
-  PopulateTransactions();
+  //PopulateTransactions();
 
   $scope.GetCategoryTitle = function(cat){
     return cat.charAt(0).toUpperCase();
@@ -27,7 +27,7 @@ function ($scope, $stateParams, $cordovaSQLite) {
       $scope.displayMonth = 0;
     }
     $scope.displayMonthName = monthNames[$scope.displayMonth];
-    PopulateTransactions();
+    //PopulateTransactions();
   };
 
   $scope.PreviousMonth = function(){
@@ -38,7 +38,7 @@ function ($scope, $stateParams, $cordovaSQLite) {
       $scope.displayMonth = 11;
     }
     $scope.displayMonthName = monthNames[$scope.displayMonth];
-    PopulateTransactions();
+    //PopulateTransactions();
   }
 
   function PopulateTransactions(){
