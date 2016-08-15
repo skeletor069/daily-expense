@@ -21,24 +21,26 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    //if(window.cordova) {
-    //  // App syntax
-    //  //db = $cordovaSQLite.openDB({name: "expense.db", location: 1});
-    //  try {
-    //    db = $cordovaSQLite.openDB({name:"expense.db",location:'default'});
-    //  } catch (error) {
-    //    alert(error);
-    //  }
-    //} else {
-    //  // Ionic serve syntax
-    //  db = window.openDatabase("expense.db", "1.0", "My expense", -1);
-    //}
-
-    try {
-      db = $cordovaSQLite.openDB({name:"expense.db",location:'default'});
-    } catch (error) {
-      alert(error);
+    if(window.cordova) {
+      try {
+        db = $cordovaSQLite.openDB({name:"expense.db",location:'default'});
+      } catch (error) {
+        alert(error);
+      }
+    } else {
+      // Ionic serve syntax
+      try {
+        db = window.openDatabase("expense.db", "1.0", "My expense", -1);
+      }catch(error){
+        alert(error);
+      }
     }
+
+    //try {
+    //  db = $cordovaSQLite.openDB("expense.db");
+    //} catch (error) {
+    //  alert(error);
+    //}
     //$cordovaSQLite.execute(db, "drop table if exists categories");
     try {
       $cordovaSQLite.execute(db, "create table if not exists categories(id integer primary key, category_name text,icon_name text)");
